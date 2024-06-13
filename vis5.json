@@ -1,0 +1,13 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Tip Amount by Smoking Status",
+  "data": {
+    "url": "tips.csv"
+  },
+  "mark": "boxplot",
+  "encoding": {
+    "x": {"field": "smoker", "type": "nominal"},
+    "y": {"field": "tip", "type": "quantitative"}
+  }
+}

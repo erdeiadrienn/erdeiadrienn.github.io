@@ -1,0 +1,13 @@
+
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Distribution of Tip Amount by Gender",
+  "data": {
+    "url": "tips.csv"
+  },
+  "mark": "boxplot",
+  "encoding": {
+    "x": {"field": "sex", "type": "nominal"},
+    "y": {"field": "tip", "type": "quantitative"}
+  }
+}
