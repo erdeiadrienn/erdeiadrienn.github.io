@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Étteremek Borravaló Elemzése</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-lite@4"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+    <header>
+        <h1>Étteremek Borravaló Elemzése</h1>
+        <p><a href="https://github.com/erdeiadrienn">Erdei Adrienn</a></p>
+    </header>
+    
+    <section id="introduction">
+        <p>Az éttermi borravalók adatainak elemzésével egy olyan adatvizualizációs portfóliót hoztam létre, amely különböző szempontok szerint mutat be érdekes összefüggéseket. A vizualizációk célja, hogy mélyebb betekintést nyújtsanak az éttermi borravalók és számlák alakulásába, és segítsenek az étterem tulajdonosoknak és menedzsereknek javítani szolgáltatásaikat és növelni bevételeiket. Az adatokat valós éttermi tranzakciókból gyűjtötték, és a projekt különösen hasznos lehet az éttermi működés optimalizálásában.</p>
+        <p>Az elemzéshez használt adatok valós éttermi tranzakciókból származnak, és többek között tartalmazzák a számla összegét, a borravaló összegét, a vendégek nemét, dohányzási szokásait, az étkezés idejét (ebéd vagy vacsora), valamint a hét napját. Ezek az adatok lehetővé teszik, hogy különböző szempontok szerint vizsgáljuk meg az éttermi költési szokásokat és a borravalók alakulását.</p>
+    </section>
+
+    <section id="chart1">
+        <h2>1. Ábra: Összesített tippek időszak szerint (Oszlopdiagram)</h2>
+        <p>Az oszlopdiagram az összesített számla összegeit mutatja a hét különböző napjain.</p>
+        <div id="vis1" style="width: 1000px; height: 500px;"></div>
+        <p>Az adatokból kiderül, hogy mely napokon keletkeznek a legmagasabb számlaösszegek. Ez az információ hasznos lehet az éttermek számára a forgalmas napok azonosítására, lehetővé téve a személyzet és a készletek megfelelő tervezését. A hétvégék (szombat és vasárnap) általában magasabb számlaösszegeket eredményeznek, ami arra utal, hogy ezek a napok a legforgalmasabbak az étterem számára.</p>
+        <script type="text/javascript">
+            var vg_1 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Összesített tippek időszak szerint",
+              "data": {
+                "url": "https://raw.githubusercontent.com/erdeiadrienn/erdeiadrienn.github.io/main/adatbazis.csv",
+                "format": {"type": "csv"}
+              },
+              "mark": "bar",
+              "width": 1000,
+              "height": 500,
+              "encoding": {
+                "x": {
+                  "field": "day",
+                  "type": "ordinal",
+                  "title": "Nap",
+                  "sort": ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap"]
+                },
+                "y": {"field": "tip", "type": "quantitative", "title": "Borravaló összege"},
+                "color": {"field": "day", "type": "ordinal", "scale": {"scheme": "category20b"}},
+                "tooltip": [
+                  {"field": "day", "type": "ordinal", "title": "Nap"},
+                  {"field": "tip", "type": "quantitative", "title": "Borravaló összege"}
+                ]
+              }
+            };
+            vegaEmbed('#vis1', vg_1).then(function(result) {
+                // Access the Vega view instance as result.view
+            }).catch(console.error);
+        </script>
+    </section>
+
+    <section id="chart2">
+        <h2>2. Ábra: Nemek közötti különbségek a tippekben (Kördiagram)</h2>
+        <p>A kördiagram a borravalók eloszlását mutatja férfiak és nők között.</p>
+        <div id="vis2" style="width: 500px; height: 500px; margin: 0 auto;"></div>
+        <p>Az eredmények alapján látható, hogy mindkét nem esetében hasonló a borravalók eloszlása, de a férfiak esetenként hajlamosabbak magasabb borravalót adni.</p>
+        <script type="text/javascript">
+            var vg_2 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Nemek közötti különbségek a tippekben",
+              "data": {
+                "url": "https://raw.githubusercontent.com/erdeiadrienn/erdeiadrienn.github.io/main/adatbazis.csv",
+                "format": {"type": "csv"}
+              },
+              "mark": "arc",
+              "width": 500,
+              "height": 500,
+              "encoding": {
+                "theta": {"field": "tip", "type": "quantitative", "title": "Borravaló összege"},
+                "color": {"field": "sex", "type": "nominal", "title": "Nem", "scale": {"scheme": "set1"}},
+                "tooltip": [
+                  {"field": "sex", "type": "nominal", "title": "Nem"},
+                  {"field": "tip", "type": "quantitative", "title": "Borravaló összege"}
+                ]
+              }
+            };
+            vegaEmbed('#vis2', vg_2).then(function(result) {
+                // Access the Vega view instance as result.view
+            }).catch(console.error);
+        </script>
+    </section>
+
+    <section id="chart3">
+        <h2>3. Ábra: Tippek és számlaösszegek közötti kapcsolat (Pontdiagram)</h2>
+        <p>A pontdiagram a tippek összegét mutatja a számla összegének függvényében.</p>
+        <div id="vis3" style="width: 1000px; height: 500px;"></div>
+        <p>Látható, hogy a számla összegének növekedésével általában növekszik a borravaló összege is.</p>
+        <script type="text/javascript">
+            var vg_3 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Tippek és számlaösszegek közötti kapcsolat",
+              "data": {
+                "url": "https://raw.githubusercontent.com/erdeiadrienn/erdeiadrienn.github.io/main/adatbazis.csv",
+                "format": {"type": "csv"}
+              },
+              "mark": "point",
+              "width": 1000,
+              "height": 500,
+              "encoding": {
+                "x": {"field": "total_bill", "type": "quantitative", "title": "Számla összege"},
+                "y": {"field": "tip", "type": "quantitative", "title": "Borravaló összege"},
+                "color": {"field": "sex", "type": "nominal", "title": "Nem", "scale": {"scheme": "set1"}},
+                "tooltip": [
+                  {"field": "total_bill", "type": "quantitative", "title": "Számla összege"},
+                  {"field": "tip", "type": "quantitative", "title": "Borravaló összege"},
+                  {"field": "sex", "type": "nominal", "title": "Nem"}
+                ]
+              }
+            };
+            vegaEmbed('#vis3', vg_3).then(function(result) {
+                // Access the Vega view instance as result.view
+            }).catch(console.error);
+        </script>
+    </section>
+
+       <section id="chart4">
+        <h2>4. Ábra: Átlagos borravaló időszak szerint (Sávdiagram)</h2>
+        <p>A sávdiagram az átlagos borravalót mutatja különböző időszakokban (ebéd és vacsora).</p>
+        <div id="vis4" style="width: 1000px; height: 500px;"></div>
+        <p>Látható, hogy a vacsoraidőszakban általában magasabb borravalók fordulnak elő, míg az ebédidőszakban alacsonyabbak.</p>
+        <script type="text/javascript">
+            var vg_4 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Átlagos borravaló időszak szerint",
+              "data": {
+                "url": "https://raw.githubusercontent.com/erdeiadrienn/erdeiadrienn.github.io/main/adatbazis.csv",
+                "format": {"type": "csv"}
+              },
+              "mark": "bar",
+              "width": 1000,
+              "height": 500,
+              "encoding": {
+                "x": {"field": "time", "type": "nominal", "title": "Időszak"},
+                "y": {"field": "tip", "type": "quantitative", "aggregate": "average", "title": "Átlagos borravaló"},
+                "color": {"field": "time", "type": "nominal", "scale": {"scheme": "set2"}},
+                "tooltip": [
+                  {"field": "time", "type": "nominal", "title": "Időszak"},
+                  {"field": "tip", "type": "quantitative", "aggregate": "average", "title": "Átlagos borravaló"}
+                ]
+              }
+            };
+            vegaEmbed('#vis4', vg_4).then(function(result) {
+                // Access the Vega view instance as result.view
+            }).catch(console.error);
+        </script>
+    </section>
+
+    <section id="chart5">
+        <h2>5. Ábra: Átlagos borravaló dohányzó és nem dohányzó vendégek esetén (Kördiagram)</h2>
+        <p>A kördiagram az átlagos borravalót mutatja dohányzó és nem dohányzó vendégek esetén.</p>
+        <div id="vis5" style="width: 500px; height: 500px; margin: 0 auto;"></div>
+        <p>A dohányzó vendégek által adott borravalók kissé alacsonyabbak a nem dohányzó vendégekéhez képest.</p>
+        <script type="text/javascript">
+            var vg_5 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Átlagos borravaló dohányzó és nem dohányzó vendégek esetén",
+              "data": {
+                "url": "https://raw.githubusercontent.com/erdeiadrienn/erdeiadrienn.github.io/main/adatbazis.csv",
+                "format": {"type": "csv"}
+              },
+              "mark": "arc",
+              "width": 500,
+              "height": 500,
+              "encoding": {
+                "theta": {"field": "tip", "type": "quantitative", "aggregate": "average", "title": "Átlagos borravaló"},
+                "color": {"field": "smoker", "type": "nominal", "title": "Dohányzó", "scale": {"scheme": "set2"}},
+                "tooltip": [
+                  {"field": "smoker", "type": "nominal", "title": "Dohányzó"},
+                  {"field": "tip", "type": "quantitative", "aggregate": "average", "title": "Átlagos borravaló"}
+                ]
+              }
+            };
+            vegaEmbed('#vis5', vg_5).then(function(result) {
+                // Access the Vega view instance as result.view
+            }).catch(console.error);
+        </script>
+    </section>
+
+    <section id="chart6">
+        <h2>6. Ábra: Napi átlagos borravaló méret szerinti eloszlás (Hőtérkép)</h2>
+        <p>A hőtérkép a napi átlagos borravalót mutatja különböző számlaméretek szerint.</p>
+        <div id="vis6" style="width: 1000px; height: 500px;"></div>
+        <p>A nagyobb számlaméretekhez magasabb átlagos borravalók társulnak, különösen a hétvégén.</p>
+        <script type="text/javascript">
+            var vg_6 = {
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Napi átlagos borravaló méret szerinti eloszlás",
+              "data": {
+                "url": "https://raw.githubusercontent.com/erdeiadrienn/erdeiadrienn.github.io/main/adatbazis.csv",
+                "format": {"type": "csv"}
+              },
+              "mark": "rect",
+              "width": 1000,
+              "height": 500,
+              "encoding": {
+                "x": {
+                  "field": "day",
+                  "type": "ordinal",
+                  "title": "Nap",
+                  "sort": ["Hétfő", "Kedd", "Szerda", "Csütörtök", "Péntek", "Szombat", "Vasárnap"]
+                },
+                "y": {
+                  "field": "size",
+                  "type": "ordinal",
+                  "title": "Számlaméret"
+                },
+                "color": {
+                  "field": "tip",
+                  "type": "quantitative",
+                  "title": "Átlagos borravaló",
+                  "aggregate": "mean",
+                  "scale": {"scheme": "blues"}
+                },
+                "tooltip": [
+                  {"field": "day", "type": "ordinal", "title": "Nap"},
+                  {"field": "size", "type": "ordinal", "title": "Számlaméret"},
+                  {"field": "tip", "type": "quantitative", "title": "Átlagos borravaló", "aggregate": "mean"}
+                ]
+              }
+            };
+            vegaEmbed('#vis6', vg_6).then(function(result) {
+                // Access the Vega view instance as result.view
+            }).catch(console.error);
+        </script>
+    </section>
+
+    <section id="conclusion">
+        <p>Az elemzés során feltárt összefüggések értékes betekintést nyújtanak az éttermek működésébe, segítve a szolgáltatások célzott fejlesztését és a bevételek növelését. A projekt skálázható és automatizálható, így további adatdimenziók és vizualizációk bevezetésével bővíthető, ami még mélyebb és részletesebb elemzéseket tesz lehetővé.</p>
+    </section>
+</body>
+</html>
